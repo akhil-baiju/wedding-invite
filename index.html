@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Akhil & Akila</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Pinyon+Script&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- RESET & BASE --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #fcfbf9;
+            color: #2c2c2c;
+            font-family: 'Cormorant Garamond', serif;
+            overflow-x: hidden;
+            /* Paper Texture */
+            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- EXTRAS: PARTICLES --- */
+        .particle-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1; overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            background: #6b7f3a;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: floatUp 15s linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            50% { opacity: 0.4; }
+            100% { transform: translateY(-10vh) translateX(20px); opacity: 0; }
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 5rem;
+            line-height: 1;
+            margin: 15px 0;
+            color: #333;
+            z-index: 2;
+            position: relative;
+        }
+
+        h2 { font-family: 'Pinyon Script', cursive; font-size: 3.5rem; margin-bottom: 10px; }
+        
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        p { font-size: 1.15rem; line-height: 1.6; color: #444; }
+
+        .script-text {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 2.2rem;
+            color: #556b2f;
+            margin-top: 15px;
+        }
+        
+        .and-symbol {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            display: block;
+            margin: 10px 0;
+            color: #888;
+        }
+
+        /* --- LAYOUT --- */
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            padding-bottom: 80px;
+            width: 100%;
+            overflow: hidden; /* Prevents horizontal scroll on mobile */
+        }
+
+        section {
+            min-height: 90vh; /* Full screen feel */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* --- FLORAL CORNERS (Responsive) --- */
+        .floral-corner {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .top-left { top: -80px; left: -100px; }
+        .bottom-right { bottom: -80px; right: -100px; transform: rotate(180deg); }
+
+        .floral-path {
+            fill: none;
+            stroke: #6b7f3a;
+            stroke-width: 0.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 600;
+            stroke-dashoffset: 600;
+            transition: stroke-dashoffset 2.5s ease-out;
+            opacity: 0.5;
+        }
+        
+        .stroke-1 { transition-delay: 0s; }
+        .stroke-2 { transition-delay: 0.3s; }
+        .stroke-3 { transition-delay: 0.6s; }
+
+        section.active .floral-path { stroke-dashoffset: 0; }
+
+        /* --- COMPONENTS --- */
+        .info-card {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(2px);
+            padding: 60px 30px;
+            width: 90%;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.03);
+            margin: 20px 0;
+            z-index: 2;
+        }
+
+        /* --- WAX SEAL --- */
+        #envelope-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fdfcfb; z-index: 999;
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center;
+            transition: transform 1.2s cubic-bezier(0.7,0,0.3,1);
+        }
+
+        .seal-container {
+            position: relative; cursor: pointer;
+            transition: transform 0.3s ease;
+            -webkit-tap-highlight-color: transparent; /* Removes blue tap box on mobile */
+        }
+        .seal-container:hover { transform: scale(1.02); }
+
+        .wax-seal {
+            width: 140px; height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #be9e72, #947448, #634d30);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3), inset 2px 2px 5px rgba(255,255,255,0.2), inset -2px -2px 5px rgba(0,0,0,0.2);
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 55% 45% 50% 50% / 50% 55% 45% 50%; 
+            border: 6px solid #856942;
+        }
+
+        .engraving {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 3.5rem; color: #5c4528;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.2), -1px -1px 0px rgba(0,0,0,0.3);
+            opacity: 0.9;
+        }
+
+        .tap-text {
+            margin-top: 25px;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            color: #999;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* --- PHOTO FRAME --- */
+        .photo-frame {
+            width: 90%; max-width: 400px; height: 450px;
+            border-radius: 200px 200px 0 0;
+            overflow: hidden; margin: 0 auto 30px auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .photo-frame img {
+            width: 100%; height: 100%; object-fit: cover;
+            transform: scale(1.1); transition: transform 3s ease;
+        }
+        .photo-frame.active img { transform: scale(1); }
+
+        /* --- ANIMATIONS --- */
+        .fade-in-up {
+            opacity: 0; transform: translateY(30px);
+            transition: opacity 1.2s ease, transform 1.2s ease;
+            position: relative; z-index: 2;
+        }
+        .fade-in-up.active { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 0.3s; }
+        .delay-2 { transition-delay: 0.6s; }
+        .delay-3 { transition-delay: 0.9s; }
+        
+        .rsvp-btn {
+            text-decoration: none; color: #2c2c2c;
+            border: 1px solid #2c2c2c; padding: 16px 45px;
+            text-transform: uppercase; letter-spacing: 2px;
+            font-size: 0.8rem; font-family: 'Montserrat';
+            transition: 0.3s; display: inline-block;
+            background: rgba(255,255,255,0.5); /* Readable against any bg */
+        }
+        
+
+        /* =========================================
+           MOBILE RESPONSIVE STYLES
+           ========================================= */
+        @media screen and (max-width: 768px) {
+            
+            /* Typography Scaling */
+            h1 { font-size: 3.5rem; margin: 10px 0; }
+            h2 { font-size: 2.5rem; }
+            h3 { font-size: 0.7rem; letter-spacing: 2px; }
+            p { font-size: 1rem; }
+            .script-text { font-size: 1.2rem; }
+            
+            /* Wax Seal Sizing */
+            .wax-seal { width: 120px; height: 120px; }
+            .engraving { font-size: 3rem; }
+
+            /* Layout Adjustments */
+            section { 
+                padding: 30px 15px; 
+                min-height: 25vh; /* slightly less tall for mobile browser bars */
+            }
+            
+            .info-card {
+                width: 95%;
+                padding: 40px 20px;
+            }
+
+            /* Floral Positioning for Mobile (Prevent Overlap) */
+            .floral-corner {
+                width: 200px; /* Smaller drawings */
+                height: 200px;
+            }
+            .top-left { 
+                top: -40px; 
+                left: -60px; 
+            }
+            .bottom-right { 
+                bottom: -40px; 
+                right: -60px; 
+            }
+            
+            /* Photo Frame */
+            .photo-frame {
+                height: 350px; /* Shorter for mobile screens */
+                width: 85%;
+            }
+        }
+
+        /* Small Phones (iPhone SE etc) */
+        @media screen and (max-width: 380px) {
+            h1 { font-size: 3rem; }
+            .floral-corner { opacity: 0.3; } /* Fade drawings more on tiny screens */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="particle-container">
+        <div class="particle" style="left: 10%; width: 4px; height: 4px; animation-duration: 20s; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 30%; width: 6px; height: 6px; animation-duration: 25s; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 70%; width: 3px; height: 3px; animation-duration: 18s; animation-delay: 5s;"></div>
+        <div class="particle" style="left: 90%; width: 5px; height: 5px; animation-duration: 22s; animation-delay: 1s;"></div>
+        <div class="particle" style="left: 50%; width: 4px; height: 4px; animation-duration: 28s; animation-delay: 7s;"></div>
+    </div>
+
+    <div id="envelope-overlay">
+        <div class="seal-container" onclick="startExperience()">
+            <div class="wax-seal">
+                <span class="engraving">A&A</span>
+            </div>
+        </div>
+        <div class="tap-text">Tap to open</div>
+    </div>
+
+    <div class="container">
+        
+        <section class="intro-section">
+            <svg class="floral-corner" style="position:relative; width: 120px; height: 200px; transform: none; margin-bottom: 20px;" viewBox="0 0 100 200">
+                <path class="floral-path stroke-1" d="M50 200 Q50 150 50 100" />
+                <path class="floral-path stroke-2" d="M50 100 Q30 80 30 60 Q30 40 50 50" />
+                <path class="floral-path stroke-3" d="M50 100 Q70 80 70 60 Q70 40 50 50" />
+            </svg>
+            <div class="script-text fade-in-up delay-2">You are invited!</div>
+        </section>
+
+        <section class="names-section">
+            
+            <svg class="floral-corner top-left" viewBox="0 0 200 200">
+                <path class="floral-path stroke-1" d="M0 50 Q40 50 60 80" />
+                <path class="floral-path stroke-2" d="M60 80 Q50 100 30 110" />
+                <path class="floral-path stroke-3" d="M20 20 Q60 20 90 60" />
+            </svg>
+            
+            <svg class="floral-corner bottom-right" viewBox="0 0 200 200">
+                <path class="floral-path stroke-1" d="M0 50 Q40 50 60 80" />
+                <path class="floral-path stroke-2" d="M60 80 Q50 100 30 110" />
+                <path class="floral-path stroke-3" d="M20 20 Q60 20 90 60" />
+            </svg>
+
+            <h1 class="fade-in-up delay-1">Akhil</h1>
+            <span class="and-symbol fade-in-up delay-2">and</span>
+            <h1 class="fade-in-up delay-3">Akila</h1>
+
+            <div class="fade-in-up delay-3" style="margin-top: 40px;">
+                <p style="font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase;">Request the honour of</p>
+                <p style="font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase;">your presence at our weddding reception</p>
+            </div>
+        </section>
+
+        <section>
+            <div class="info-card fade-in-up">
+                <h3>Sunday</h3>
+                <h2 style="margin: 15px 0;">May 3, 2026</h2>
+                <h3 style="margin-bottom: 25px;">at 5 O'clock in the evening</h3>
+                <div style="width: 40px; height: 1px; background: #ccc; margin: 25px auto;"></div>
+                <h3>Al-Saj Convention Centre, COMET</h3>
+                <p>Kazhakuttam, Trivandrum</p>
+            </div>
+            <p class="script-text fade-in-up delay-1">Wedding 29th April 2026 @ Palakkad</p>
+            <p class="script-text fade-in-up delay-1">Beejees Convention Centre, Poodur</p>
+        </section>
+
+        <section>
+            <div class="photo-frame fade-in-up">
+                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1000&auto=format&fit=crop" alt="Bouquet and Rings">
+            </div>
+
+            <h2 class="fade-in-up">We hope you can<br>join us!</h2>
+            
+        </section>
+
+    </div>
+
+    <script>
+        function startExperience() {
+            document.getElementById('envelope-overlay').style.transform = 'translateY(-100%)';
+            // Slight delay before allowing scroll/animations to start
+            setTimeout(initObserver, 600);
+        }
+
+        function initObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        
+                        const anims = entry.target.querySelectorAll('.fade-in-up, .photo-frame');
+                        anims.forEach(el => el.classList.add('active'));
+                        
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 }); // Reduced threshold for better mobile triggering
+
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+        }
+    </script>
+</body>
+</html>
