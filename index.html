@@ -13,15 +13,22 @@
         /* --- RESET & BASE --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            background-color: #fcfbf9;
-            color: #2c2c2c;
-            font-family: 'Cormorant Garamond', serif;
-            overflow-x: hidden;
-            /* Paper Texture */
-            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
-            -webkit-font-smoothing: antialiased;
-        }
+ html, body {
+    width: 100%;
+    overflow-x: hidden; /* Handles horizontal scroll globally */
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #fcfbf9;
+    color: #2c2c2c;
+    font-family: 'Cormorant Garamond', serif;
+    /* Removed overflow-x from here since we added it above, 
+       but keeping background image settings is fine */
+    background-image: url("data:image/svg+xml,..."); 
+    -webkit-font-smoothing: antialiased;
+}
 
         /* --- EXTRAS: PARTICLES --- */
         .particle-container {
@@ -50,6 +57,13 @@
             color: #333;
             z-index: 2;
             position: relative;
+        }
+      h1, .script-text {
+            padding-left: 10px;
+            padding-right: 15px; /* Extra space on right for cursive tails */
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         h2 { font-family: 'Pinyon Script', cursive; font-size: 3.5rem; margin-bottom: 10px; }
@@ -89,7 +103,7 @@
             position: relative;
             padding-bottom: 80px;
             width: 100%;
-            overflow: hidden; /* Prevents horizontal scroll on mobile */
+            /* overflow: hidden; /* Prevents horizontal scroll on mobile */ */
         }
 
         section {
@@ -101,6 +115,7 @@
             text-align: center;
             padding: 40px 20px;
             position: relative;
+            margin: 5px;
         }
 
         /* --- FLORAL CORNERS (Responsive) --- */
@@ -311,7 +326,7 @@
                 <path class="floral-path stroke-2" d="M50 100 Q30 80 30 60 Q30 40 50 50" />
                 <path class="floral-path stroke-3" d="M50 100 Q70 80 70 60 Q70 40 50 50" />
             </svg>
-            <div class="script-text fade-in-up delay-2" style="margin: 10px;" >You are invited!</div>
+            <div class="script-text fade-in-up delay-2">You are invited!</div>
         </section>
 
         <section class="names-section">
@@ -328,7 +343,7 @@
                 <path class="floral-path stroke-3" d="M20 20 Q60 20 90 60" />
             </svg>
 
-            <h1 class="fade-in-up delay-1" style="margin-right:5px;">Akhil</h1>
+            <h1 class="fade-in-up delay-1">Akhil</h1>
             <span class="and-symbol fade-in-up delay-2">and</span>
             <h1 class="fade-in-up delay-3">Akila</h1>
 
@@ -347,7 +362,7 @@
                 <h3>Al-Saj Convention Centre, COMET</h3>
                 <p>Kazhakuttam, Trivandrum</p>
             </div>
-            <p class="script-text fade-in-up delay-1" style="margin-right:5px;">Wedding 29th April 2026 @ Palakkad</p>
+            <p class="script-text fade-in-up delay-1">Wedding 29th April 2026 @ Palakkad</p>
             <p class="script-text fade-in-up delay-1">Beejees Convention Centre, Poodur</p>
         </section>
 
@@ -391,6 +406,7 @@
 </body>
 
 </html>
+
 
 
 
