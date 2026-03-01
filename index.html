@@ -311,7 +311,7 @@ body.noscroll {
         }
     </style>
 </head>
-<body>
+<body class="noscroll">
 
     <div class="particle-container">
         <div class="particle" style="left: 10%; width: 4px; height: 4px; animation-duration: 20s; animation-delay: 0s;"></div>
@@ -393,6 +393,9 @@ body.noscroll {
         function startExperience() {
             document.getElementById('envelope-overlay').style.transform = 'translateY(-100%)';
             // Slight delay before allowing scroll/animations to start
+            // 2. UNLOCK SCROLLING
+            document.body.classList.remove('noscroll');
+            
             setTimeout(initObserver, 600);
         }
 
@@ -418,6 +421,7 @@ body.noscroll {
 </body>
 
 </html>
+
 
 
 
