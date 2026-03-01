@@ -186,11 +186,24 @@ body {
             border: 6px solid #856942;
         }
 
-        .engraving {
+        /* .engraving {
             font-family: 'Pinyon Script', cursive;
             font-size: 3.5rem; color: #5c4528;
             text-shadow: 1px 1px 0px rgba(255,255,255,0.2), -1px -1px 0px rgba(0,0,0,0.3);
             opacity: 0.9;
+        } */
+
+         .engraving {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 3.5rem; 
+            color: #5c4528;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.2), -1px -1px 0px rgba(0,0,0,0.3);
+            opacity: 0.9;
+    
+    /* --- NEW LINES TO FIX THE CUT OFF "A" --- */
+            padding-right: 15px; /* Gives space for the tail on the right */
+            padding-left: 5px;   /* Adds a little space on left to keep it visually centered */
+            display: block;      /* Ensures padding works correctly */
         }
 
         .tap-text {
@@ -398,6 +411,7 @@ body {
 </body>
 
 </html>
+
 
 
 
